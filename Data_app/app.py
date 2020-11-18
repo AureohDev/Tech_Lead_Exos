@@ -56,7 +56,7 @@ if st.checkbox("Afficher Shape"):
 # Show Dataset Datatypes
 st.subheader("Affichage des statistiques descriptives")
 if st.checkbox("Afficher Datatypes"):
-		st.write(data.dtypes)
+	st.write(data.dtypes)
 
 # Show Dataset Graphs
 st.subheader("Affichage Graphique des données")
@@ -76,5 +76,34 @@ if st.checkbox("Graphique en Barre"):
         st.write(displot)
         st.pyplot()
 
-if st.button("Thanks"):
+# Select Custom Dataset Graph
+
+st.subheader("Visualisation Personnalisable")
+
+if st.checkbox("Afficher un graphique personnalisé"):
+    custom_selected_columns = st.multiselect("Choisissez plusieurs colonnes",data.columns.tolist())
+    if len(custom_selected_columns) != 0: 
+        custom_data_columns = data[custom_selected_columns]
+        graph_type_list = ['HeatMap','DisPlot','CountPlot','CatPlot']
+        graph_type = st.selectbox("Choisissez un type de graphique",graph_type_list)
+            
+        if graph_type == "HeatMap":
+            st.info("HeatMap : ne prends en comptes que les colonnes numériques")
+            custom_heatmap = sns.heatmap(custom_data_columns.corr(), vmin=-1, vmax=1, annot=True)
+            st.write(custom_heatmap)
+            st.pyplot()
+        elif graph_type == "DisPlot":
+            st.info("Displot : ne prends que la première colonne sélectionné")
+            custom_displot = sns.displot(x=custom_data_columns.iloc[:, 0])
+            st.pyplot()
+        elif graph_type == "CountPlot":
+            st.info("CountPlot : ne prends que la première colonne sélectionné")
+            custom_countplot = sns.countplot(x=custom_data_columns.iloc[:, 0])
+            st.pyplot()
+        elif graph_type == "CatPlot":
+            st.info("CatPlot : ne prends que les deux premières colonnes sélectionnés")
+            custom_catplot = sns.catplot(x=custom_data_columns.iloc[:, 0],y=custom_data_columns.iloc[:, 1],data=data)
+            st.pyplot()
+
+if st.button("Merci !"):
     st.balloons()
