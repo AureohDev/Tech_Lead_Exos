@@ -24,7 +24,9 @@ def index():
 #API
 @app.route("/api/books", methods=['GET','POST'])
 def api_books():
-    return jsonify(load_books())
+    results = load_books()
+    return render_template('board.html',books=results)
+    #return jsonify(load_books())
 
 @app.route("/api/book/id/<id>")
 def api_book_by_id(id=1):
@@ -51,7 +53,8 @@ def api_book_by_title(title=1):
     if not results:
         return 'Livre introuvable'
     else :
-        return jsonify(results)
+        return render_template('board.html',books=results)
+        #return jsonify(results)
 
 @app.route("/api/book/pagecount/<count>")
 def api_book_by_pagecount(count=1):
@@ -65,24 +68,25 @@ def api_book_by_pagecount(count=1):
     if not results:
         return 'Livre introuvable'
     else :
-        return jsonify(results)
+        return render_template('board.html',books=results)
+        #return jsonify(results)
 
-
-@app.route("/about")
-def about():
-    return 'The about page'
 
 @app.route("/hello/")
 @app.route("/hello/<name>")
 def hello(name=None):
     return render_template('hello.html',name=name)
 
-@app.route("/login", methods=['GET','POST'])
-def login():
-    if request.method == 'POST':
-        return do_the_login()
-    else:
-        return show_the_login_form() 
+#@app.route("/about")
+#def about():
+#    return 'The about page'
+
+#@app.route("/login", methods=['GET','POST'])
+#def login():
+#    if request.method == 'POST':
+#        return do_the_login()
+#    else:
+#        return show_the_login_form() 
 
 if __name__ == '__main__':
     app.run(debug=True)
