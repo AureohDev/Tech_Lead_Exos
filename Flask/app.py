@@ -23,15 +23,43 @@ def index():
 
 #API
 @app.route("/api/books", methods=['GET','POST'])
-def books():
+def api_books():
     return jsonify(load_books())
 
-@app.route("/api/book/id/<book_id>")
-def book_by_id(book_id=1):
-    book_id = int(book_id)
+@app.route("/api/book/id/<id>")
+def api_book_by_id(id=1):
+    id = int(id)
     results = []
     for book in books:
-        if book['id'] == book_id:
+        if book['id'] == id:
+            results.append(book)
+
+    if not results:
+        return 'Livre introuvable'
+    else :
+        return jsonify(results)
+
+@app.route("/api/book/title/<title>")
+def api_book_by_title(title=1):
+    title = str(title)
+    results = []
+    books = load_books()
+    for book in books:
+        if book['title'] == title:
+            results.append(book)
+
+    if not results:
+        return 'Livre introuvable'
+    else :
+        return jsonify(results)
+
+@app.route("/api/book/pagecount/<count>")
+def api_book_by_pagecount(count=1):
+    count = int(count)
+    results = []
+    books = load_books()
+    for book in books:
+        if book['pageCount'] == count:
             results.append(book)
 
     if not results:
