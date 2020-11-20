@@ -52,7 +52,7 @@ docker ps -a
 
 La commande ```docker ps -a``` affiche la liste des containers dans docker.
 
-ici on a :
+Ici on a :
 * docker/getting-started
 * hello-world
 * ubuntu
@@ -65,7 +65,7 @@ docker ps
 ```
 La commande ```docker ps``` affiche la liste des containers éxécutés.
 
-ici on a : 
+Ici on a : 
 * docker/getting-started
 * ubuntu
 
@@ -78,3 +78,74 @@ docker run -it --name python bitnami/python
 Télécharge et lance un container python présent sur le hub docker.
 
 Après téléchargement et installation, une interface de commande python s'éxécute.
+
+### Création du Dockerfile
+
+``` dockerfile
+# Use the official image as a parent image.
+FROM ubuntu:20.04
+#FROM python:3.8
+
+# Set the working directory.
+WORKDIR /usr/src/app
+
+# Install on ubuntu python3.7, python3-pip, and Vim
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.7 \
+    python3-pip \
+    vim \
+    && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy requirements.txt in filesystem working directory
+COPY requirements.txt .
+
+# Install with pip3 all python lib from requirements
+RUN pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir -r requirements.txt
+
+# copy all files from current directory to filesystem working directory.
+COPY . .
+
+# Add metadata to the image to describe which port the container is listening on at runtime.
+EXPOSE 80
+
+# Run the specified command within the container.
+# Here is launch of app.py with python 3
+CMD ["python3","app.py"]
+```
+
+### Création d'une image à partir du Dockerfile
+
+On se place dans le dossier applicatif avec le DockerFile présent à l'intérieur.
+
+``` bash
+docker build --tag docker-python-flask .
+```
+
+Ici le nom de l'image sera ```docker-python-flask``` 
+
+### Vérification de la création de l'image
+
+``` bash
+docker image ls 
+```
+
+Cette commande permet de voir via le terminale toutes les images docker installés.
+
+Ici on a :
+* docker-python-flask
+* docker/getting-started
+* hello-world
+* ubuntu
+* bitnami/python
+
+### Éxécution de l'image build
+
+
+``` bash
+docker run -d -p 5000:5000 docker-python-flask
+```
+
+Lance le container à partir de l'image docker-python-flask avec le port 5000.
